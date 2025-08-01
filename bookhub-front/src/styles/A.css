@@ -1,0 +1,206 @@
+/* publisher.css */
+
+/* 전체 배경 및 기본 폰트 */
+body {
+  background-color: white; /* 전체 배경색을 약간 밝게 */
+  font-family: 'Arial', sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+/* 상단 바: 등록 버튼 및 검색창을 수평 배치 */
+.topBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  background-color: white;
+  border-bottom: 1px solid #ddd;
+}
+
+/* 등록 버튼 */
+.topBar .button {
+  background-color: #265185;
+  color: white;
+  font-weight: bold;
+  padding: 8px 16px;
+  cursor: pointer;
+  border: none;
+  border-radius: 4px;
+}
+
+/* 검색창 */
+.topBar .search {
+  width: 300px;
+  max-width: 60%;
+  height: 36px;
+  border: 1px solid #ccc;
+  outline: none;
+  border-radius: 18px; /* 둥글게 */
+  padding: 0 16px;
+  font-size: 14px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.2s ease;
+}
+
+.topBar .search:focus {
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* 테이블 컨테이너: 스크롤 가능하도록 가로 여유 주기 */
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+/* 테이블 기본 */
+table {
+  width: 100%;
+  margin: 16px auto;
+  border-collapse: collapse;
+  background-color: white;
+}
+
+/* 헤더 행 스타일 */
+thead tr {
+  background-color: #2b5480;
+  color: white;
+}
+
+/* th, td */
+th, td {
+  border: 1px solid #ccc;
+  padding: 12px;
+  text-align: center;
+  font-size: 14px;
+}
+
+/* 높이 고정 행 (optional) */
+.tableheight {
+  height: 48px;
+}
+
+/* 수정/삭제 버튼 */
+.modifyBtn, .deleteBtn {
+  background-color: #e74c3c;
+  color: white;
+  font-size: 12px;
+  border: none;
+  border-radius: 12px;
+  padding: 4px 10px;
+  margin: 0 4px;
+  cursor: pointer;
+}
+
+.modifyBtn {
+  background-color: #2b5480; /* 수정은 파란색 계열 */
+}
+
+.deleteBtn {
+  background-color: #e74c3c;
+}
+
+/* 비활성화된 페이지 버튼 (disabled) */
+.pageBtn:disabled {
+  color: #aaa;
+  cursor: not-allowed;
+}
+
+/* footer(페이지네이션) */
+.footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 16px 0;
+  gap: 8px;
+}
+
+/* 페이지 번호 버튼 */
+.pageBtn {
+  border: none;
+  background: none;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+/* 현재 페이지 강조 */
+.pageBtn.current {
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+/* 페이지 정보 텍스트 */
+.pageText {
+  font-size: 14px;
+  margin-left: 12px;
+}
+
+/* 전체 조회 버튼: 우측 하단 고정? 
+   여기선 Footer 오른쪽 끝에 배치하기보다는 topBar 오른쪽이나, 
+   본 예시에서는 Footer 옆에 위치시킵니다. 필요시 레이아웃 위치 조정하세요. */
+.searchAll {
+  background-color: #e74c3c;
+  color: white;
+  font-size: 12px;
+  border: none;
+  border-radius: 5px;
+  padding: 6px 12px;
+  margin-left: 24px;
+  cursor: pointer;
+}
+
+/* 모달 내부 스타일: Create/Update 폼에 사용 */
+.publisher-modal-header {
+  margin: 0 0 12px;
+  font-size: 18px;
+  color: #265185;
+}
+
+.publisher-input {
+  width: 100%;
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+
+.publisher-error-message {
+  color: red;
+  font-size: 12px;
+  margin: 4px 0;
+}
+
+.publisher-button-group {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+/* input-search 공통 스타일 */
+.input-search {
+  padding: 0.6rem 1rem;
+  font-size: 0.95rem;
+  color: #333;
+  background-color: #fdfdfd;
+  border: 1px solid #ccc;
+  border-radius: 50px;
+  outline: none;
+  transition: all 0.2s ease;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+  min-width: 180px;
+}
+
+/* placeholder 색상 */
+.input-search::placeholder {
+  color: #aaa;
+  font-weight: 500;
+}
+
+/* focus 시 스타일 */
+.input-search:focus {
+  border-color: #305882; /* 강조 색상 */
+  box-shadow: 0 0 0 2px rgba(48, 88, 130, 0.2);
+  background-color: #fff;
+}

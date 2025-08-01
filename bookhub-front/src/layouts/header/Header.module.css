@@ -1,0 +1,23 @@
+.header{
+    min-width: 1920px;
+    height : 60px;
+    background-color: rgba(124,183,255,0.13);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: none;
+}
+
+.logoImg{
+    height: 70px;
+    vertical-align: middle;
+}
+
+.headerInfo{
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    font-size: 14px;
+    color: rgb(4, 92, 199);
+    margin: 30px;
+}

@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bookhub.bookhub_back.mapper.SalesQuantityStatisticsMapper">
+
+    <!-- 1. 베스트셀러 -->
+
+    <!-- 1) 총합 베스트 셀러 (100위까지) -->
+    <select id="findTop100BestSellers" resultType="BestSellerDto">
+        SELECT
+            b.book_isbn AS isbn,
+            b.book_title,
+            a.author_name,
+            p.publisher_name,
+            bc.category_name,
+            b.cover_url,
+            SUM(cod.amount) AS total_sales
+        FROM customer_orders_detail cod
+                 JOIN customer_orders co ON cod.customer_order_id = co.customer_order_id
+                 JOIN books b ON cod.book_isbn = b.book_isbn
+                 JOIN authors a ON b.author_id = a.author_id
+                 JOIN publishers p ON b.publisher_id = p.publisher_id
+                 JOIN book_categories bc ON b.category_id = bc.category_id
+                 LEFT JOIN refund_orders r ON r.order_id = co.customer_order_id
+        WHERE r.order_id IS NULL
+        GROUP BY b.book_isbn, b.book_title, a.author_name,
+                 p.publisher_name, bc.category_name, b.cover_url
+        ORDER BY total_sales DESC
+            LIMIT 100
+    </select>
+
+<!--    2) 기간별 베스트셀러 (100위까지)-->
+    <!-- 주간 -->
+    <select id="findWeeklyBestSellers" resultType="BestSellerDto">
+        SELECT
+            b.book_isbn AS isbn,
+            b.book_title AS bookTitle,
+            a.author_name AS authorName,
+            p.publisher_name AS publisherName,
+            bc.category_name AS categoryName,
+            b.cover_url AS coverUrl,
+            SUM(cod.amount) AS totalSales
+        FROM customer_orders_detail cod
+                 JOIN customer_orders co ON cod.customer_order_id = co.customer_order_id
+                 JOIN books b ON cod.book_isbn = b.book_isbn
+                 JOIN authors a ON b.author_id = a.author_id
+                 JOIN publishers p ON b.publisher_id = p.publisher_id
+                 JOIN book_categories bc ON b.category_id = bc.category_id
+                 LEFT JOIN refund_orders r
+                           ON r.order_id = co.customer_order_id
+        WHERE co.customer_order_date_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)
+          AND r.order_id IS NULL
+        GROUP BY b.book_isbn, b.book_title, a.author_name,
+                 p.publisher_name, bc.category_name, b.cover_url
+        ORDER BY totalSales DESC
+            LIMIT 100;
+    </select>
+
+    <!-- 월간 -->
+    <select id="findMonthlyBestSellers" resultType="BestSellerDto">
+        SELECT
+            b.book_isbn AS isbn,
+            b.book_title AS bookTitle,
+            a.author_name AS authorName,
+            p.publisher_name AS publisherName,
+            bc.category_name AS categoryName,
+            b.cover_url AS coverUrl,
+            SUM(cod.amount) AS totalSales
+        FROM customer_orders_detail cod
+                 JOIN customer_orders co ON cod.customer_order_id = co.customer_order_id
+                 JOIN books b ON cod.book_isbn = b.book_isbn
+                 JOIN authors a ON b.author_id = a.author_id
+                 JOIN publishers p ON b.publisher_id = p.publisher_id
+                 JOIN book_categories bc ON b.category_id = bc.category_id
+                 LEFT JOIN refund_orders r
+                           ON r.order_id = co.customer_order_id
+        WHERE co.customer_order_date_at >= DATE_SUB(NOW(), INTERVAL 1 MONTH)
+          AND r.order_id IS NULL
+        GROUP BY b.book_isbn, b.book_title, a.author_name,
+                 p.publisher_name, bc.category_name, b.cover_url
+        ORDER BY totalSales DESC
+            LIMIT 100;
+    </select>
+
+    <!-- 연간 -->
+    <select id="findYearlyBestSellers" resultType="BestSellerDto">
+        SELECT
+            b.book_isbn AS isbn,
+            b.book_title AS bookTitle,
+            a.author_name AS authorName,
+            p.publisher_name AS publisherName,
+            bc.category_name AS categoryName,
+            b.cover_url AS coverUrl,
+            SUM(cod.amount) AS totalSales
+        FROM customer_orders_detail cod
+                 JOIN customer_orders co ON cod.customer_order_id = co.customer_order_id
+                 JOIN books b ON cod.book_isbn = b.book_isbn
+                 JOIN authors a ON b.author_id = a.author_id
+                 JOIN publishers p ON b.publisher_id = p.publisher_id
+                 JOIN book_categories bc ON b.category_id = bc.category_id
+                 LEFT JOIN refund_orders r
+                           ON r.order_id = co.customer_order_id
+        WHERE co.customer_order_date_at >= DATE_SUB(NOW(), INTERVAL 1 YEAR)
+          AND r.order_id IS NULL
+        GROUP BY b.book_isbn, b.book_title, a.author_name,
+                 p.publisher_name, bc.category_name, b.cover_url
+        ORDER BY totalSales DESC
+            LIMIT 100;
+    </select>
+
+    <!-- 3) 카테고리별 베스트셀러 (20위까지) -->
+    <select id="findBestSellersByCategory" resultType="BestSellerDto" parameterType="long">
+        SELECT
+            b.book_isbn AS isbn,
+            b.book_title AS bookTitle,
+            a.author_name AS authorName,
+            p.publisher_name AS publisherName,
+            bc.category_name AS categoryName,
+            b.cover_url AS coverUrl,
+            SUM(cod.amount) AS totalSales
+        FROM customer_orders_detail cod
+                 JOIN customer_orders co ON cod.customer_order_id = co.customer_order_id
+                 JOIN books b ON cod.book_isbn = b.book_isbn
+                 JOIN authors a ON b.author_id = a.author_id
+                 JOIN publishers p ON b.publisher_id = p.publisher_id
+                 JOIN book_categories bc ON b.category_id = bc.category_id
+                 LEFT JOIN refund_orders r
+                           ON r.order_id = co.customer_order_id
+        WHERE co.customer_order_date_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)
+          AND ( bc.category_id = #{categoryId} OR bc.parent_category_id = #{categoryId} )
+          AND r.order_id IS NULL
+        GROUP BY b.book_isbn, b.book_title, a.author_name,
+                 p.publisher_name, bc.category_name, b.cover_url
+        ORDER BY totalSales DESC
+            LIMIT 20;
+    </select>
+
+    <!-- 2. 판매 수량 차트 -->
+
+    <!-- 1) 기간별 -->
+    <!-- Daily -->
+    <select id="findDailySalesQuantity" resultType="SalesQuantityStatisticsDto">
+        SELECT
+            DATE(co.customer_order_date_at) AS orderDate,
+            SUM(co.customer_order_total_amount) AS totalSales
+        FROM customer_orders co
+            LEFT JOIN refund_orders r
+            ON r.order_id = co.customer_order_id
+        WHERE YEAR(co.customer_order_date_at) = YEAR(CURDATE())
+          AND MONTH(co.customer_order_date_at) = #{month}
+          AND r.order_id IS NULL
+        GROUP BY DATE(co.customer_order_date_at)
+        ORDER BY orderDate ASC;
+    </select>
+
+    <!-- Weekly -->
+    <select id="findWeeklySalesQuantity" resultType="SalesQuantityStatisticsDto">
+        SELECT
+            DATE(co.customer_order_date_at) AS orderDate,
+            SUM(co.customer_order_total_amount) AS totalSales
+        FROM customer_orders co
+        LEFT JOIN refund_orders r
+        ON r.order_id = co.customer_order_id
+        WHERE YEAR(co.customer_order_date_at) = #{year}
+          AND MONTH(co.customer_order_date_at) = #{month}
+            AND r.order_id IS NULL
+        GROUP BY DATE(co.customer_order_date_at)
+        ORDER BY orderDate ASC;
+    </select>
+
+    <!-- Monthly -->
+    <select id="findMonthlySalesQuantity" resultType="SalesQuantityStatisticsDto">
+        SELECT
+            MONTH(co.customer_order_date_at) AS orderMonth,
+            SUM(co.customer_order_total_amount) AS totalSales
+        FROM customer_orders co
+            LEFT JOIN refund_orders r
+            ON r.order_id = co.customer_order_id
+        WHERE YEAR(co.customer_order_date_at) = #{year}
+          AND r.order_id IS NULL
+        GROUP BY MONTH(co.customer_order_date_at)
+        ORDER BY MONTH(co.customer_order_date_at) ASC;
+    </select>
+
+    <!-- 2) 할인항목별 -->
+    <select id="findSalesQuantityByDiscountPolicy" resultType="SalesQuantityStatisticsDto">
+        SELECT
+            dp.policy_title AS policyTitle,
+            COALESCE(SUM(cod.amount), 0) AS totalSales
+        FROM discount_policies dp
+                 LEFT JOIN customer_orders co
+                           ON dp.policy_id = co.applied_policy_id
+                               AND YEAR(co.customer_order_date_at) = #{year}
+            AND QUARTER(co.customer_order_date_at) = #{quarter}
+            AND NOT EXISTS (
+        SELECT 1
+        FROM refund_orders r
+        WHERE r.order_id = co.customer_order_id
+            )
+            LEFT JOIN customer_orders_detail cod
+        ON cod.customer_order_id = co.customer_order_id
+        GROUP BY dp.policy_title
+        ORDER BY totalSales DESC;
+    </select>
+
+    <!-- 3) 지점별 -->
+    <select id="findSalesQuantityByBranch" resultType="SalesQuantityStatisticsDto">
+        SELECT
+            br.branch_name AS branchName,
+            COALESCE(SUM(co.customer_order_total_amount), 0) AS totalSales
+        FROM branches br
+                 LEFT JOIN customer_orders co
+                           ON co.branch_id = br.branch_id
+                               AND YEAR(co.customer_order_date_at) = #{year}
+            AND MONTH(co.customer_order_date_at) = #{month}
+            AND NOT EXISTS (
+        SELECT 1
+        FROM refund_orders r
+        WHERE r.order_id = co.customer_order_id
+            )
+        GROUP BY br.branch_name
+        ORDER BY totalSales DESC;
+    </select>
+
+    <!-- 4) 카테고리별 -->
+    <select id="findSalesQuantityByCategory" resultType="CategorySalesQuantityDto">
+        SELECT
+            COALESCE(bc_parent.category_type, bc_leaf.category_type) AS category_type,
+            COALESCE(bc_parent.category_id, bc_leaf.category_id) AS categoryId,
+            COALESCE(bc_parent.category_name, bc_leaf.category_name) AS categoryName,
+            COALESCE(SUM(cod.amount), 0) AS totalSales
+        FROM books b
+                 JOIN book_categories bc_leaf ON b.category_id = bc_leaf.category_id
+                 LEFT JOIN book_categories bc_parent ON bc_leaf.parent_category_id = bc_parent.category_id
+                 JOIN customer_orders_detail cod ON cod.book_isbn = b.book_isbn
+                 JOIN customer_orders co ON co.customer_order_id = cod.customer_order_id
+                 LEFT JOIN refund_orders r ON r.order_id = co.customer_order_id
+        WHERE co.customer_order_date_at >= DATE_SUB(NOW(), INTERVAL 1 MONTH)
+          AND r.order_id IS NULL
+        GROUP BY
+            COALESCE(bc_parent.category_type, bc_leaf.category_type),
+            COALESCE(bc_parent.category_id, bc_leaf.category_id),
+            COALESCE(bc_parent.category_name, bc_leaf.category_name)
+        ORDER BY totalSales DESC;
+    </select>
+</mapper>

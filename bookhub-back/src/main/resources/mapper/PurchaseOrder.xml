@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.bookhub_back.mapper.PurchaseOrderMapper">
+    <select id="searchPurchaseOrder" resultType="PurchaseOrderResponseDto">
+        SELECT
+        p.purchase_order_id,
+        b.book_isbn AS isbn,
+        b.book_title,
+        b.book_price,
+        p.purchase_order_amount,
+        (b.book_price * p.purchase_order_amount) as purchaseOrderAmount,
+        p.purchase_order_status,
+        p.purchase_order_date_at,
+        e.name as employeeName,
+        br.branch_name,
+        br.branch_location
+        FROM purchase_orders p
+        JOIN books b ON p.book_isbn = b.book_isbn
+        JOIN employees e ON p.purchase_employee_id = e.employee_id
+        JOIN branches br ON e.branch_id = br.branch_id
+        <where>
+            <if test="employeeName != null and employeeName != ''">
+                AND e.name = #{employeeName}
+            </if>
+            <if test="bookIsbn != null and bookIsbn != ''">
+                AND b.book_isbn = #{bookIsbn}
+            </if>
+            <if test="purchaseOrderStatus != null">
+                AND p.purchase_order_status = #{purchaseOrderStatus}
+            </if>
+        </where>
+    </select>
+</mapper>

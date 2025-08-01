@@ -1,0 +1,15 @@
+package com.example.bookhub_back.common.enums;
+
+public enum AlertType {
+    SIGNUP_APPROVAL,
+    SIGNUP_APPROVAL_SUCCESS,
+    CHANGE_PERMISSION_SUCCESS,
+    CHANGE_BRANCH_SUCCESS,
+    CHANGE_POSITION_SUCCESS,
+    STOCK_LOW,
+    STOCK_OUT,
+    PURCHASE_REQUESTED,
+    PURCHASE_APPROVED,
+    BOOK_RECEIVED_SUCCESS,
+    NOTICE
+}
