@@ -24,7 +24,7 @@ public class PurchaseOrderAdminController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    @PutMapping(ApiMappingPattern.ADMIN_API + "/approval/{purchaseOrderId}")
+    @PutMapping("/approval/{purchaseOrderId}")
     public ResponseEntity<ResponseDto<PurchaseOrderResponseDto>> approvePurchaseOrder(
             @AuthenticationPrincipal String loginId,
             @PathVariable Long purchaseOrderId,
